@@ -15,7 +15,12 @@ const UserService = {
         try {
             // validation
             let { email, mobileno, name, address, password } = req.body
-            const salt = await bcrypt.genSalt();
+            const { error } = await registerSchema.validate(req.body);
+            if (error){
+                return res.send({ message: "*validation failed" })
+            }
+           //password bcrypt
+                const salt = await bcrypt.genSalt();
                 password = await bcrypt.hash(password, salt)
 
             // check the email existing or not
@@ -33,7 +38,7 @@ const UserService = {
 
                 });
               const response = await users.save();
-              res.send(response)
+              res.send({message:"*successfully registered"})
                
             })
 
@@ -115,7 +120,7 @@ const UserService = {
                             error: "error on senting mail"
                         })
                     }
-                    res.send({message:"Mail sent successfully"})
+                    res.send({message:"*Mail sent successfully to your Registered mail"})
 
 
                 });
