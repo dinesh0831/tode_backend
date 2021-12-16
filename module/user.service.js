@@ -91,64 +91,7 @@ const UserService = {
             res.sendStatus(500)
         }
     },
-    async forgetPassword(req, res) {
-        try {
-            let { email } = req.body
-            const { error } = await resetSchema.validate(req.body);
-            if (error)
-                return res.send({ message: "*validation failed" })
-
-            await Userlist.findOne({ email: email }).exec(async (err, user) => {
-                console.log(user)
-
-                if (!user) {
-                    return res.send({ message: "*User not exist" })
-                }
-
-                const token = await jwt.sign({ email }, process.env.authkey, { expiresIn: "30m" })
-                const data = {
-                    from: ' groceryshop@order.com',
-                    to: email,
-                    subject: 'Password reset',
-                    html: `
-                    <h2>Please click on given link to reset your password</h2>
-                    <p>${process.env.frontend}/reset/${token} </p>`
-                };
-                mg.messages().send(data, function (error, body) {
-                    if (error) {
-                        res.send({
-                            error: "error on senting mail"
-                        })
-                    }
-                    res.send({message:"*Mail sent successfully to your Registered mail"})
-
-
-                });
-              
-
-            })
-
-
-        }
-        catch (err) {
-            res.send(err)
-        }
-    },
-    async resetPassword(req, res) {
-        let { email, password, } = req.body
-        const { error } = await logginSchema.validate(req.body);
-        if (error)
-            return res.send({ message: "*validation failed" })
-
-            const salt = await bcrypt.genSalt();
-            password = await bcrypt.hash(password, salt)
-        const data=await Userlist.findOneAndUpdate({ email: email }, {
-            password
-        }, { new: true })
-       
-        res.send({message:"successfully password changed"})
-    }
-
+    
 
 }
 module.exports = UserService
