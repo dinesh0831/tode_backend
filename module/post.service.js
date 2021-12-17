@@ -10,7 +10,7 @@ exports.Post=async(req,res,next)=>{
        time:time
     }) 
     const response=await PostList.save()
-    res.send(response)
+    res.send({message:"*your ToDo is updated "})
 }
 exports.getPost=async(req,res)=>{
     const email=req.user.user.email
